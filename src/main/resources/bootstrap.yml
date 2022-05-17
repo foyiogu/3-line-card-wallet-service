@@ -1,8 +1,8 @@
 spring:
   main:
     allow-bean-definition-overriding: true
-#  profiles:
-#    active: ${APP_ENV}
+  profiles:
+    active: ${APP_ENV}
   application:
     name: wallet-service
   
