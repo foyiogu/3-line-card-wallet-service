@@ -99,7 +99,7 @@ public class WalletService {
                 .orElse(createWalletForInstitution(Role.CONTRACTING_INSTITUTION));
 
         Wallet creatorWallet = walletRepository.findByUserId(payment.getProductCreatorId())
-                .orElse(createWalletForUser(payment.getProductCreatorId()));
+                .orElse(walletRepository.findByUserId(3L).get());
 
         BigDecimal tenPercent = payment.getAmountPaid().divide(BigDecimal.TEN, RoundingMode.HALF_EVEN);
         clientInstitutionWallet.setBalance(clientInstitutionWallet.getBalance().add(tenPercent));
