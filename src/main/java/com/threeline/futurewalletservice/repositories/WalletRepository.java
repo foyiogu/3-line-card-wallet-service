@@ -5,9 +5,11 @@ import com.threeline.futurewalletservice.enums.Currency;
 import com.threeline.futurewalletservice.enums.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+@Repository
 public interface WalletRepository extends JpaRepository<Wallet, Long> {
     Boolean existsByAccountNumber(String accountNumber);
 
