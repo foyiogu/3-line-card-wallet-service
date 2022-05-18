@@ -30,7 +30,7 @@ public class WalletService {
 
 
     public Wallet findWallet(Long id) {
-        return walletRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Wallet not found"));
+        return walletRepository.findById(id).orElseThrow(() -> new NullPointerException("Wallet not found"));
     }
 
     public Wallet findWalletByUserId(Long userId) {
@@ -42,7 +42,7 @@ public class WalletService {
     private Wallet createWalletForUser(Long userId) {
         //TODO: Fetch user details from auth server
         //TODO: Create wallet for user
-        return null;
+        return new Wallet();
     }
 
     public Wallet createWalletForUser(UserDTO userDTO) {
@@ -65,38 +65,16 @@ public class WalletService {
     }
 
 
-    public APIResponse<Wallet> createContentCreatorWallet(CreateWalletRequest request) {
-
-        if (!walletRepository.existsByUserId(request.getUserId())) {
-            Wallet wallet = Wallet.builder()
-                    .userId(request.getUserId())
-                    .userUuid(request.getUserUuid())
-                    .accountName(request.getAccountName())
-                    .accountNumber(app.generateAccountNumber())
-                    .userEmail(request.getEmail())
-                    .balance(BigDecimal.ZERO)
-                    .currency(Currency.NGN)
-                    .isBlocked(false)
-                    .role(Role.CONTENT_CREATOR)
-                    .build();
-
-            return new APIResponse<>("wallet created", true, walletRepository.save(wallet));
-
-        }else {
-            throw new IllegalArgumentException("User already has a wallet");
-        }
-    }
-
 
     public APIResponse<PaymentDTO> fundWalletsAfterPayment(PaymentDTO payment){
 
         Wallet clientInstitutionWallet = walletRepository
                 .findByRole(Role.CLIENT_INSTITUTION)
-                .orElse(createWalletForInstitution(Role.CLIENT_INSTITUTION));
+                .get();
 
         Wallet contractingInstitutionWallet = walletRepository
                 .findByRole(Role.CONTRACTING_INSTITUTION)
-                .orElse(createWalletForInstitution(Role.CONTRACTING_INSTITUTION));
+                .get();
 
         Wallet creatorWallet = walletRepository.findByUserId(payment.getProductCreatorId())
                 .orElse(walletRepository.findByUserId(3L).get());
